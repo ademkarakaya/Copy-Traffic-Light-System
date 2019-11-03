@@ -1,0 +1,66 @@
+@startuml STATE_MACHINE_SEQUENCE_OFF_PEAK
+
+' http://www.victoriawalks.org.au/Crossing_the_road/
+
+state TRAFFIC_SEQUENCE_OFF_PEAK {
+
+    [*]     --> INITIAL
+
+    INITIAL --> ALL_RED
+
+    ALL_RED ---> NS_R_G: sensor = ns_r
+    NS_R_G  ---> NS_R_Y: Timer expiry
+    NS_R_Y  ---> ALL_RED: Timer expiry
+
+    ' NS ped states
+    EW_S_G_SEN ---> EW_S_G_P_X: EW_P or in queue
+    EW_S_G_P_X ---> EW_S_G_P_F: 10s pulse
+    EW_S_G_P_F ---> EW_S_G_SEN: 5s pulse
+
+    ALL_RED ---> EW_R_G: sensor = ew_r
+    EW_R_G  ---> EW_R_Y: Timer expiry
+    EW_R_Y ---> ALL_RED: Timer expiry
+
+    ' Traffic state
+    ALL_RED ---> NS_S_G_P_X: sensor = ns_str\nOR\nsensor = ns_p
+    NS_S_G ---> NS_S_Y:Transition away from\nunused off-peak state
+    NS_S_Y ---> ALL_RED: Timer pulse
+
+    NS_S_G_SEN ---> NS_S_Y: Transition away from\nunused off-peak state
+
+    ' NS ped states
+    NS_S_G_P_X ---> NS_S_G_P_F: 10s pulse
+    NS_S_G_P_F ---> NS_S_Y: 5s pulse
+
+    ' Traffic state
+    ALL_RED ---> EW_S_G_SEN: !sensor\nOR\new_str\nOR\new_p
+    EW_S_G_SEN ---> EW_S_G_SEN: Timer expiry
+    EW_S_G_SEN ---> EW_S_Y: ((sensor && sensor != ew_str)\n|| ns_p) && Timer Expiry
+    EW_S_Y ---> ALL_RED: Timer expiry
+
+    EW_S_G ---> EW_S_Y: Transition away from\nunsed off-peak state
+
+}
+
+ALL_RED: Safety state
+ALL_RED: Duration: 3 seconds
+ALL_RED: Next state is dependant on previous state
+
+
+EW_S_G_SEN: 30s timer start
+
+NS_S_G_P_X: Duration 10 s
+EW_S_G_P_X: Duration 10 s
+
+NS_S_G_P_F: Duration 5 s
+EW_S_G_P_F: Duration 5 s
+
+EW_R_G: Duration: 10 seconds
+NS_R_G: Duration: 10 seconds
+
+NS_S_Y: Duration: 4 seconds
+EW_R_Y: Duration: 4 seconds
+EW_S_Y: Duration: 4 seconds
+NS_R_Y: Duration: 4 seconds
+
+@enduml

@@ -1,0 +1,69 @@
+@startuml
+
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+' box "Users" #LightBlue
+'     actor Car
+'     actor Pedestrian
+' end box
+
+' box "Intersection Controller" #LightPink
+    
+    participant main
+    participant input
+    participant output
+    box "Intersection Controller" #LightPink
+        database data
+    end box
+    participant state_machine
+    participant msg_pass_server
+
+' end box
+
+activate main
+main --> data: initData()
+activate data
+deactivate data
+
+main --//: threadCreate()
+
+activate input
+activate output
+activate state_machine
+activate msg_pass_server
+
+input -[#Blue]-// main: <font color=blue>join()</font>
+output -[#Blue]-// main: <font color=blue>join()</font>
+state_machine -[#Blue]-// main: <font color=blue>join()</font>
+
+msg_pass_server --//: Start server
+deactivate main
+
+
+
+deactivate msg_pass_server
+
+state_machine --//: timer_start()
+deactivate state_machine
+
+input -> input: wait_interrupt()
+deactivate input
+
+output -> output: cond_wait()
+deactivate output
+
+state_machine //--: state_timer_pulse()
+activate state_machine
+state_machine --// data: mutex_lock()
+activate data
+state_machine --// data: Update_state
+state_machine -[#Green]-// output : <font color=green><&wifi> cond_signal()</font>
+activate output
+
+
+
+
+
+
+@enduml

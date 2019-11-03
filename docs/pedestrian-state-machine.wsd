@@ -1,0 +1,57 @@
+@startuml ALGORITHMIC_STATE_MACHINE
+
+[*] --> ALL_RED_P
+
+ALL_RED_P --> NS_P_G: Sensor: NS_P_G\nAND\nTraffic Flow: NS_S_G\nAND\nRemaining time > 15 s
+ALL_RED_P --> EW_P_G: Sensor: EW_P_G\nAND\nTraffic Flow: EW_S_G\nAND\nRemaining time > 15 s
+
+NS_P_G --> NS_P_Y: Timer Expired
+EW_P_G --> EW_P_Y: Timer Expired
+
+NS_P_Y --> ALL_RED_P: Timer Expired
+EW_P_Y --> ALL_RED_P: Timer Expired
+
+ALL_RED_P: No pedestrians may cross
+NS_P_G: Duration: 10 Seconds\nNorth and south bound\npedestrians may cross
+EW_P_G: Duration: 10 Seconds\nEast and west bound\npedestrians may cross
+
+NS_P_Y: Duration: 5 Seconds\nNorth and south bound\npedestrians should complete\ntheir crossing
+EW_P_Y: Duration: 5 Seconds\nEast and west bound\npedestrians should complete\ntheir crossing
+
+@enduml
+
+
+
+@startuml
+
+
+object {
+    
+
+}
+IntersecitonController "1" -- "1" Int_StateMachine
+IntersecitonController "1" -- "1" Int_CriticalServer
+IntersecitonController "1" -- "1" Int_CriticalClient
+IntersecitonController "1" -- "1" Int_NonCriticalClient
+IntersecitonController "1" -- "1" InputRail
+IntersecitonController "1" -- "1" OutputRail
+RailCrossingController "1" -- "1" Rail_StateMachine
+RailCrossingController "1" -- "1" Rail_CriticalServer
+RailCrossingController "1" -- "1" Rail_CriticalClient
+RailCrossingController "1" -- "1" InputIntersection
+RailCrossingController "1" -- "1" OutpuIntersection
+TrafficCentralController "1" -- "1" TCC_State
+TrafficCentralController "1" -- "*" TCC_CriticalServer
+TrafficCentralController "1" -- "*" TCC_CriticalClient
+TrafficCentralController "1" -- "*" TCC_NonCriticalServer
+TrafficCentralController "1" -- "*" IntersecitonController
+TrafficCentralController "1" -- "1" InputTCC
+TrafficCentralController "1" -- "1" OutputTCC
+TrafficCentralController "0" -- "1" RailCentralController
+RailCentralController "1" -- "1" RCC_State
+RailCentralController "1" -- "*" RCC_CriticalServer
+RailCentralController "1" -- "*" RCC_CriticalClient
+RailCentralController "1" -- "1" RailCrossingController
+RailCentralController "1" -- "1" InputRCC
+RailCentralController "1" -- "1" OutputRCC
+@enduml

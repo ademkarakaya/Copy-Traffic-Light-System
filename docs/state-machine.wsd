@@ -1,0 +1,55 @@
+@startuml
+
+' scale 500 width
+[*] ---> INITIAL
+
+INITIAL ---> TRAFFIC_SEQUENCE_OFF_PEAK: Mode: Off Peak
+INITIAL ---> TRAFFIC_SEQUENCE_PEAK: Mode: Peak
+
+INITIAL                    --> FAULT: On any error detection
+TRAFFIC_SEQUENCE_OFF_PEAK  --> FAULT: On an error
+TRAFFIC_SEQUENCE_PEAK  --> FAULT: On an error
+FAULT                      --> INITIAL: On recovery
+
+INITIAL: Initial state on system start-up
+FAULT: System may enter this state from any state on error detection
+
+TRAFFIC_SEQUENCE_PEAK: Timer based state machine
+TRAFFIC_SEQUENCE_OFF_PEAK: Sensor driven state machine
+
+@enduml
+
+@startuml
+
+' scale 500 width
+[*] -> TRAIN_PRESENT
+TRAIN_PRESENT --> NO_TRAIN_PRESENT: Train signal off
+
+NO_TRAIN_PRESENT --> FAULT: Controller signals fault
+TRAIN_PRESENT --> FAULT: Controller signals fault
+FAULT --> TRAIN_PRESENT: Controller signals no fault
+
+TRAIN_PRESENT: Boom gates down
+NO_TRAIN_PRESENT: Boom gates up
+FAULT: Controller signals a fault
+
+@enduml
+
+
+
+
+@startuml
+left to right direction
+:Rail Control Centre: --> (Rail Fault)
+:Rail Control Centre: --> (Rail Reset)
+:Traffic Control Centre: --> (Traffic Fault)
+:Traffic Control Centre: --> (Traffic Reset)
+:Traffic Control Centre: --> (Peak)
+:Traffic Control Centre: --> (Off-Peak)
+Pedestrian --> (EW Cross)
+Pedestrian --> (NS Cross)
+Car --> (NS Straight/Left Turn)
+Car --> (NS Right Turn)
+Car --> (EW Straight/LeftTurn)
+Car --> (EW Right Turn)
+@enduml

@@ -1,0 +1,37 @@
+@startuml STATE_MACHINE_SEQUENCE_OFF_PEAK
+
+state TRAFFIC_SEQUENCE_PEAK {
+
+    [*]     --> ALL_RED
+
+    ALL_RED ---> NS_S_G: From INITIAL or NS_R_Y
+    NS_S_G  ---> NS_S_Y: Timer expiry
+    NS_S_Y  ---> ALL_RED: Timer expiry
+    ALL_RED ---> EW_R_G: From NS_S_Y
+    EW_R_G  ---> EW_R_Y: Timer expiry
+    EW_R_Y  ---> ALL_RED: Timer expiry
+    ALL_RED ---> EW_S_G: From EW_R_Y
+    EW_S_G  ---> EW_S_Y: Timer expiry
+    EW_S_Y  ---> ALL_RED: Timer expiry
+    ALL_RED ---> NS_R_G: From EW_S_Y
+    NS_R_G  ---> NS_R_Y: Timer expiry
+    NS_R_Y  ---> ALL_RED: Timer expiry
+
+}
+
+ALL_RED: Traffic safety state
+ALL_RED: Duration: 3 seconds
+ALL_RED: Next state is dependant on previous state
+
+NS_S_G: Duration: 30 seconds
+EW_S_G: Duration: 30 seconds
+
+EW_R_G: Duration: 10 seconds
+NS_R_G: Duration: 10 seconds
+
+NS_S_Y: Duration: 4 seconds
+EW_R_Y: Duration: 4 seconds
+EW_S_Y: Duration: 4 seconds
+NS_R_Y: Duration: 4 seconds
+
+@enduml

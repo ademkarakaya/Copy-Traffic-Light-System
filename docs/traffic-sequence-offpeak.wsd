@@ -1,0 +1,40 @@
+@startuml
+
+state TRAFFIC_SEQUENCE_OFF_PEAK {
+
+    [*]     ---> ALL_RED
+
+    ALL_RED ---> NS_S_G: No Sensors\nOR\nNS_P\nOR\nNS_STR
+    NS_S_G  ---> NS_S_Y: Sensor triggered\n(Not NS_P or NS_STR)\nAND\nTimer expired
+    NS_S_Y  ---> ALL_RED: Timer Expired
+
+    ALL_RED ---> NS_R_G: Sensor:\nNS_R
+    NS_R_G  ---> NS_R_Y: Timer Expired
+    NS_R_Y  ---> ALL_RED: Timer Expired
+
+    ALL_RED ---> EW_R_G: Sensor:\nEW_R
+    EW_R_G  ---> EW_R_Y: Timer Expired
+    EW_R_Y  ---> ALL_RED: Timer Expired
+
+    ALL_RED ---> EW_S_G: Sensor:\nEW_STR\nOR\nEW_P
+    EW_S_G  ---> EW_S_Y: Timer Expired
+    EW_S_Y  ---> ALL_RED: Timer Expired
+
+}
+
+ALL_RED: Traffic safety state
+ALL_RED: Duration: 3 seconds
+ALL_RED: Next state is dependant on previous state
+
+NS_S_G: Duration: 30 seconds
+EW_S_G: Duration: 30 seconds
+
+EW_R_G: Duration: 10 seconds
+NS_R_G: Duration: 10 seconds
+
+NS_S_Y: Duration: 4 seconds
+EW_R_Y: Duration: 4 seconds
+EW_S_Y: Duration: 4 seconds
+NS_R_Y: Duration: 4 seconds
+
+@enduml

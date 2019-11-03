@@ -1,0 +1,86 @@
+@startuml
+
+' could "LAN Network" {
+    node "I1 Controller" {
+    [BeagleBone Black I1] <..> SPI1
+    [Keypad I1] <..> SPI1
+
+    [BeagleBone Black I1] <..> I2C1
+    [LCD Display I1] <..> I2C1
+
+    [BeagleBone Black I1] <..> EthernetI1
+    }
+
+    node "I2 Controller" {
+    [BeagleBone Black I2] <..> SPI2
+    [Keypad I2] <..> SPI2
+
+    [BeagleBone Black I2] <..> I2C2
+    [LCD Display I2] <..> I2C2
+    [BeagleBone Black I2] <..> EthernetI2
+    }
+
+    node "X1 Controller" {
+    [BeagleBone Black X1] <..> SPIx1
+    [Keypad X1] <..> SPIx1
+
+    [BeagleBone Black X1] <..> I2Cx1
+    [LCD Display X1] <..> I2Cx1
+    [BeagleBone Black X1] <..> EthernetX1
+    }
+
+    node "Traffic Central Controller" {
+    [DE10 Nano TCC] <..> SPITCC
+    [Keypad TCC] <..> SPITCC
+
+    [DE10 Nano TCC] <..> I2CTCC
+    [Large Display] <..> I2CTCC
+    [DE10 Nano TCC] <..> EthernetTCC
+    }
+
+    node "Rail Central Controller" {
+    [DE10 Nano RCC] <..> SPIRCC
+    [Keypad RCC] <..> SPIRCC
+
+    [DE10 Nano RCC] <..> I2CRCC
+    [LCD Display RCC] <..> I2CRCC
+    [DE10 Nano RCC] <..> EthernetRCC
+    }
+
+    node "Router" {
+        [Router] <..> Ethernet
+        [BeagleBone Black I1] <.> Ethernet
+        [BeagleBone Black I2] <.> Ethernet
+        [BeagleBone Black X1] <.> Ethernet
+        [DE10 Nano TCC] <.> Ethernet
+        [DE10 Nano RCC] <.> Ethernet
+
+    }   
+' }
+
+
+
+
+@enduml
+
+
+@startuml
+node "Input" {
+ [Fault] --> Message
+ [Reset] --> Message
+ [Peak] --> Message
+ [Offpeak] --> Message
+}
+node "Message" {
+ [I1 New State] --> State
+ [I2 New State] --> State
+ [X1 New State] --> State
+}
+node "State" {
+ [I1 Current State] --> Output
+ [I2 Current State] --> Output
+ [X1 Current State] --> Output
+}
+node "Output" {
+}
+@enduml

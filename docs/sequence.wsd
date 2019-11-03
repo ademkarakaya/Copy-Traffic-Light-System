@@ -1,0 +1,14 @@
+@startuml
+
+    [*]    -> NS_S_G
+    NS_S_G -> EW_R_G
+    EW_R_G -> EW_S_G
+    EW_S_G -> NS_R_G
+    NS_R_G -> NS_S_G
+
+    NS_S_G: North-South Straight
+    EW_R_G: East-West Right Turn
+    EW_S_G: East-West Straight
+    NS_R_G: North-South Right Turn
+
+@endumls
